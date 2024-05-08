@@ -24,6 +24,7 @@ public:
 	void addLineMesh(LineVertex* vertices, unsigned int numVertices,unsigned int* indices, unsigned int numIndices);
 	void draw(int mode);
 	void getPoints(std::list<glm::vec3> &pList);
+	bool getMesh();
 	virtual ~Shape(void);
 };
 

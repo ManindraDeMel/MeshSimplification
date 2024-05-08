@@ -66,12 +66,25 @@ void Shape::addLineMesh(LineVertex* vertices, unsigned int numVertices,unsigned 
 void Shape::draw(int mode)
 {
 	//transformations
-	if(tex)
+	if (tex) {
 		tex->Bind();
-	if(mesh)
+	}
+	else {
+		std::cerr << "Warning: No texture bound." << std::endl;
+	}
+	if (mesh) {
 		mesh->Draw(mode);
-	if(lineMesh)
+	}
+	else {
+		std::cerr << "Error: mesh is not initialized." << std::endl;
+	}
+
+	if (lineMesh) {
 		lineMesh->Draw();
+	}
+	else {
+		std::cerr << "Error: lineMesh is not initialized." << std::endl;
+	}
 }
 
 Shape::~Shape(void)
@@ -90,4 +103,8 @@ Shape::~Shape(void)
 void Shape::getPoints(std::list<glm::vec3> &pList)
 {
 
+}
+
+bool Shape::getMesh() {
+	return (mesh == nullptr);
 }
