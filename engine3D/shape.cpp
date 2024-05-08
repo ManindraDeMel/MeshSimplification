@@ -105,6 +105,6 @@ void Shape::getPoints(std::list<glm::vec3> &pList)
 
 }
 
-bool Shape::getMesh() {
-	return (mesh == nullptr);
+bool Shape::meshExists() {
+	return (mesh != nullptr);
 }

@@ -111,7 +111,7 @@ Scene::Scene(glm::vec3 position,float angle,float hwRelation,float near, float f
 		{
 			shaders[shaderIndx]->Bind();
 			shaders[shaderIndx]->Update(cameras[0]->GetViewProjection()*glm::scale(glm::vec3(10,10,10)),Normal*glm::scale(glm::vec3(10,10,10)),0);
-			if (!axisMesh->getMesh()) {
+			if (axisMesh->meshExists()) {
 				axisMesh->draw(GL_LINES); //main axis
 			}
 		}
