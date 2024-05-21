@@ -62,7 +62,7 @@ struct compEdgeErr {
 
 class MeshSimplification {
 public:
-	MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio, const string& importantVerticesFile);
+	MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio);
 	~MeshSimplification();
 
 	vector<vec3> getVertices();
