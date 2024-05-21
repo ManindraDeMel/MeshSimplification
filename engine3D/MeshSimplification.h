@@ -7,16 +7,10 @@
 #include <list>
 #include <string>
 #include <map>
+#include <set>
 
 using namespace std;
 using namespace glm;
-
-/* 
-* Change this value to the wanted simplification.
-* NOTE: Pay attention to the object the main loads.
-* MAX_FACES = the maximum number of faces the simplyfied OBJ will have.
-*/
-#define MAX_FACES 100
 
 struct OBJIndex
 {
@@ -60,43 +54,40 @@ struct Edge
 };
 
 // Edges comperator.
-struct compEdgeErr
-{
-	bool operator()(const struct Edge& e1, const struct Edge& e2) const
-	{
-		if (e2.edgeError < e1.edgeError)
-			return true;
-		return false;
+struct compEdgeErr {
+	bool operator()(const Edge& e1, const Edge& e2) {
+		return e1.edgeError > e2.edgeError;
 	}
 };
 
-class MeshSimplification
-{
+class MeshSimplification {
 public:
-	MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices);
-	void start();
-	vector<vec3> getVertices();
-	list<OBJIndex> getIndices();
+	MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio, const string& importantVerticesFile);
 	~MeshSimplification();
 
-private:
-	vector<Edge> removeDups(vector<Edge> toRemove);
-	void initEdgeVector();
-	void initVertexNeighbor();
-	void buildHeap();
-	void calcFaces(int firstEdgeInd, int secondEdgeInd);
-	vec4 getOptimalPos(mat4 m, vec4 Y);
-	vec4 calcOptimalPos(Edge& e, mat4 m);
-	void calcEdgeError(struct Edge &e);
-	mat4 calcVertexError(int vertexIndex);
-	bool isTriangle(int second, int third);
+	vector<vec3> getVertices();
+	list<OBJIndex> getIndices();
 	void printEdgeVector(vector<Edge> vec);
 	void printFaces();
 	void printNeighbors();
 
+private:
+	vector<vec3> m_vertices;
+	list<OBJIndex> m_OBJIndices;
 	vector<Edge> m_edgeVector;
 	multimap<int, int> m_vertexNeighbor;
 	vector<mat4> m_errors;
-	list<OBJIndex> m_OBJIndices;
-	vector<vec3> m_vertices;
+	set<int> m_importantVertices;
+	int MAX_FACES;
+
+	void initEdgeVector();
+	void initVertexNeighbor();
+	mat4 calcVertexError(int vertexIndex);
+	void calcEdgeError(struct Edge& e);
+	void buildHeap();
+	void start();
+	bool isTriangle(int second, int third);
+	void calcFaces(int firstEdgeInd, int secondEdgeInd);
+	vector<Edge> removeDups(vector<Edge> toRemove);
+	void readImportantVertices(const string& filename);
 };

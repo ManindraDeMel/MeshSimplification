@@ -47,7 +47,7 @@ Scene::Scene(glm::vec3 position,float angle,float hwRelation,float near, float f
 	// fileName contain the OBJ file to parse
 	// simplifyFlag = 0 -> load OBJ as is
 	// simplifyFlag = 1 -> load OBJ and simplyfy it 
-	void Scene::addShape(const std::string& fileName, glm::vec3 position, int simplifyFlag)
+	void Scene::addShape(const std::string& fileName, glm::vec3 position, float simplifyFlag)
 	{
 		Shape* newShape = new Shape(fileName, simplifyFlag);
 		newShape->myTranslate(position, 1);
@@ -59,7 +59,7 @@ Scene::Scene(glm::vec3 position,float angle,float hwRelation,float near, float f
 	// textureFileName contain the texture file to apply
 	// simplifyFlag = 0 -> load OBJ as is
 	// simplifyFlag = 1 -> load OBJ and simplyfy it 
-	void Scene::addShape(const std::string& fileName,const std::string& textureFileName, int simplifyFlag)
+	void Scene::addShape(const std::string& fileName,const std::string& textureFileName, float simplifyFlag)
 	{
 		shapes.push_back(new Shape(fileName,textureFileName, simplifyFlag));
 	}

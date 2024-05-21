@@ -12,13 +12,13 @@ Shape::Shape(const Shape& shape)
 }
 
 //@Edited
-Shape::Shape(const std::string& fileName, int simplifyFlag){
+Shape::Shape(const std::string& fileName, float simplifyFlag){
 	mesh = new Mesh(fileName, simplifyFlag);
 	tex = 0;
 	isCopy = false;
 }
 //@Edited
-Shape::Shape(const std::string& fileName,const std::string& textureFileName, int simplifyFlag){
+Shape::Shape(const std::string& fileName,const std::string& textureFileName, float simplifyFlag){
 	mesh = new Mesh(fileName, simplifyFlag);
 	tex = new Texture(textureFileName);
 	isCopy = false;

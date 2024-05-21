@@ -31,7 +31,7 @@ class Mesh
 {
 public:
 	
-    Mesh(const std::string& fileName ,int simplifyFlag);												//@Edited
+    Mesh(const std::string& fileName ,float simplifyFlag);												//@Edited
 	Mesh(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices);
 
 	void Draw(int mode);

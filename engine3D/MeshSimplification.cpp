@@ -1,7 +1,10 @@
 #include "MeshSimplification.h"
 
-MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices) : m_vertices(vertices), m_OBJIndices(OBJIndices)
+MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float ratio) : m_vertices(vertices), m_OBJIndices(OBJIndices)
 {
+	int originalFaceCount = m_OBJIndices.size() / 3;
+	MAX_FACES = static_cast<int>(originalFaceCount * ratio);
+
 	// Init edgeVector.
 	initEdgeVector();
 	

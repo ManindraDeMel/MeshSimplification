@@ -4,6 +4,7 @@
 
 Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "OpenGL");	
 Scene scn(glm::vec3(0.0f, 0.0f, -15.0f), CAM_ANGLE, relation, NEAR, FAR);
+float simplificationRatio = 0.04f;
 
 int main(int argc, char** argv)
 {
@@ -14,8 +15,8 @@ int main(int argc, char** argv)
 	//scn.addShape("./res/objs/testboxNoUV.obj", glm::vec3(5, 0, 0), 1);
 
 	// monkey3 - Start faces = 4k
-	scn.addShape("./res/objs/monkey3.obj", glm::vec3(-5, 0, 0), 0);
-	scn.addShape("./res/objs/monkey3.obj", glm::vec3(5, 0, 0), 1);
+	scn.addShape("./res/objs/T101.obj", glm::vec3(-5, 0, 0), 0);
+	scn.addShape("./res/objs/T101.obj", glm::vec3(5, 0, 0), simplificationRatio);
 
 	// Wooden Crate - Start faces = 298
 	//scn.addShape("./res/objs/Wooden Crate.obj", glm::vec3(-5, 0, 0), 0);

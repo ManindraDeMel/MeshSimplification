@@ -11,7 +11,7 @@
 // simplifyFlag = 0 -> load Mesh as is
 // simplifyFlag = 1 -> load Mesh and reduce the triangles
 //					   to MAX_FACES 
-Mesh::Mesh(const std::string& fileName, int simplifyFlag)
+Mesh::Mesh(const std::string& fileName, float simplifyFlag)
 {
 	IndexedModel model = OBJModel(fileName, simplifyFlag).ToIndexedModel() ;
 	InitMesh(model);

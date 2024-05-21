@@ -11,7 +11,7 @@ static inline float ParseOBJFloatValue(const std::string& token, unsigned int st
 static inline std::vector<std::string> SplitString(const std::string &s, char delim);
 
 // OBJModel ctor
-OBJModel::OBJModel(const std::string& fileName, int simplifyFlag){
+OBJModel::OBJModel(const std::string& fileName, float simplifyFlag){
 
 	hasUVs = false;
 	hasNormals = false;
@@ -52,9 +52,9 @@ OBJModel::OBJModel(const std::string& fileName, int simplifyFlag){
             };
         }
 
-		if (simplifyFlag == 1)
+		if (simplifyFlag != 0)
 		{
-			MeshSimplification meshSimplification(OBJIndices, vertices);
+			MeshSimplification meshSimplification(OBJIndices, vertices, simplifyFlag);
 			this->OBJIndices = meshSimplification.getIndices();
 			this->vertices = meshSimplification.getVertices();
 		}

@@ -14,8 +14,8 @@ class Shape : public MovableGLM
 public:
 	enum{triangles,lines};
 	Shape(const Shape& shape);
-	Shape(const std::string& fileName, int simplifyFlag);																							//@Edited
-	Shape(const std::string& fileName,const std::string& textureFileName, int simplifyFlag);														//@Edited
+	Shape(const std::string& fileName, float simplifyFlag);																							//@Edited
+	Shape(const std::string& fileName,const std::string& textureFileName, float simplifyFlag);														//@Edited
 	Shape(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices);							
 	Shape(LineVertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices);			
 	Shape(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices, const std::string& textureFileName);
