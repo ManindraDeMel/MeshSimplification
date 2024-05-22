@@ -2,6 +2,8 @@
 
 MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float ratio) : m_vertices(vertices), m_OBJIndices(OBJIndices)
 {
+
+	readImportantVertices("./res/coords.txt");
 	int originalFaceCount = m_OBJIndices.size() / 3;
 	MAX_FACES = static_cast<int>(originalFaceCount * ratio);
 
@@ -24,6 +26,15 @@ MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> v
 
 	// Start the simplification algorithm.
 	start();
+}
+
+// Function to read the important vertices from a file.
+void MeshSimplification::readImportantVertices(const string& filename) {
+	ifstream file(filename);
+	int index;
+	while (file >> index) {
+		m_importantVertices.insert(index);
+	}
 }
 
 /**
@@ -160,7 +171,7 @@ void MeshSimplification::initEdgeVector()
 			first = *it;
 		if (counter == 1)
 			second = *it;
-		if (counter == 2) 
+		if (counter == 2)
 		{
 			third = *it;
 			counter = 0;
@@ -171,7 +182,7 @@ void MeshSimplification::initEdgeVector()
 			edge1.firstVertex = first;
 			edge1.secondVertex = second;
 
-			if (first.vertexIndex > second.vertexIndex) 
+			if (first.vertexIndex > second.vertexIndex)
 			{
 				edge1.firstVertex = second;
 				edge1.secondVertex = first;
@@ -272,83 +283,73 @@ void MeshSimplification::calcEdgeError(struct Edge& e)
 }
 
 //  @tbrief The simplification algorithm.
-void MeshSimplification::start()
-{
+void MeshSimplification::start() {
 	int currFaces = m_OBJIndices.size() / 3;
 
-	while (currFaces > MAX_FACES)
-	{
+	while (currFaces > MAX_FACES) {
+		if (m_edgeVector.empty()) {
+			std::cerr << "Error: Edge vector is empty. Cannot continue simplification." << std::endl;
+			break;
+		}
+
 		// Get the edge to remove.
 		pop_heap(m_edgeVector.begin(), m_edgeVector.end(), compEdgeErr());
+
+		if (m_edgeVector.empty()) {
+			std::cerr << "Error: Edge vector is empty after pop_heap. Cannot continue simplification." << std::endl;
+			break;
+		}
 		Edge removedEdge = m_edgeVector.back();
+
+		if (m_importantVertices.find(removedEdge.firstVertex.vertexIndex) != m_importantVertices.end() ||
+			m_importantVertices.find(removedEdge.secondVertex.vertexIndex) != m_importantVertices.end()) {
+			m_edgeVector.pop_back();
+			continue;
+		}
+
 		int firstVertexInd = removedEdge.firstVertex.vertexIndex;
 		int secondVertexInd = removedEdge.secondVertex.vertexIndex;
 		vec3 newVertex = removedEdge.newPos;
 
-		// Update the errors and position of the newly set vertex.
 		m_errors[firstVertexInd] = removedEdge.edgeQ;
 		m_vertices[firstVertexInd] = newVertex;
-		
-		// Get all the neighbors of the vertex we're removing (secondVertexInd).
-		// Insert into every one of them the combined vertex (secondVertexInd) unless it already had it.
-		// Notice we don't remove the removed vertex from the neighbors since it's not valid to erase while iterating inside an iterator without creating a copy of the original multimap and this doesn't effect correctness.
-		bool neighborToBothVertices = false;
-		pair <multimap<int, int>::iterator, multimap<int, int>::iterator> ret = m_vertexNeighbor.equal_range(secondVertexInd);
-		for (multimap<int, int>::iterator it = ret.first; it != ret.second; ++it) 
-		{
-			neighborToBothVertices = false;
-			pair <multimap<int, int>::iterator, multimap<int, int>::iterator> neighbor = m_vertexNeighbor.equal_range(it->second);
 
-			for (multimap<int, int>::iterator it2 = neighbor.first; it2 != neighbor.second; ++it2)
-			{
-				// This neighbor contained both firstVertexInd and secondVertexInd, so after the loop don't add to it the firstVertexInd.
-				if (it2->second == firstVertexInd)
-				{
+		bool neighborToBothVertices = false;
+		auto ret = m_vertexNeighbor.equal_range(secondVertexInd);
+		for (auto it = ret.first; it != ret.second; ++it) {
+			neighborToBothVertices = false;
+			auto neighbor = m_vertexNeighbor.equal_range(it->second);
+			for (auto it2 = neighbor.first; it2 != neighbor.second; ++it2) {
+				if (it2->second == firstVertexInd) {
 					neighborToBothVertices = true;
 				}
 			}
-
-			if (it->second != firstVertexInd && !neighborToBothVertices)
-			{
-				m_vertexNeighbor.insert(pair<int, int>(it->second, firstVertexInd));
+			if (it->second != firstVertexInd && !neighborToBothVertices) {
+				m_vertexNeighbor.insert({ it->second, firstVertexInd });
 			}
 		}
 
-		// Removes the edge with the minimal error.
 		m_edgeVector.pop_back();
-
-		// Reduce the faces count.
-		currFaces = currFaces - 2;
-
-		// Removing the deleted vertex in the neighbors multimap.
+		currFaces -= 2;
 		m_vertexNeighbor.erase(secondVertexInd);
 
-		// Calculate new faces now without the removed edge.
 		calcFaces(firstVertexInd, secondVertexInd);
 
-		// Updating m_edgeVector, so any edge that was connected to the removed edge has it's error recalculated and is only connected to the remaining vertex.
-		for (int i = 0; i < m_edgeVector.size(); i++)
-		{
-			if (m_edgeVector[i].secondVertex.vertexIndex == secondVertexInd)
-			{
+		for (int i = 0; i < m_edgeVector.size(); i++) {
+			if (m_edgeVector[i].secondVertex.vertexIndex == secondVertexInd) {
 				m_edgeVector[i].secondVertex.vertexIndex = firstVertexInd;
 			}
-
-			else if (m_edgeVector[i].firstVertex.vertexIndex == secondVertexInd)
-			{
+			else if (m_edgeVector[i].firstVertex.vertexIndex == secondVertexInd) {
 				m_edgeVector[i].firstVertex.vertexIndex = firstVertexInd;
 			}
-
-			if (m_edgeVector[i].firstVertex.vertexIndex == firstVertexInd || m_edgeVector[i].secondVertex.vertexIndex == firstVertexInd)
-			{
+			if (m_edgeVector[i].firstVertex.vertexIndex == firstVertexInd || m_edgeVector[i].secondVertex.vertexIndex == firstVertexInd) {
 				calcEdgeError(m_edgeVector[i]);
 			}
 		}
-
-		// Rebuild the heap with the updated edge errors.
 		buildHeap();
 	}
 }
+
 
 vector<vec3> MeshSimplification::getVertices()
 {

@@ -4,7 +4,7 @@
 
 Display display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "OpenGL");	
 Scene scn(glm::vec3(0.0f, 0.0f, -15.0f), CAM_ANGLE, relation, NEAR, FAR);
-float simplificationRatio = 0.04f;
+float simplificationRatio = 0.1f;
 
 int main(int argc, char** argv)
 {

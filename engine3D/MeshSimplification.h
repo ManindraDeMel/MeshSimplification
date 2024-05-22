@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <set>
-
+#include <fstream>
 using namespace std;
 using namespace glm;
 
@@ -59,7 +59,6 @@ struct compEdgeErr {
 		return e1.edgeError > e2.edgeError;
 	}
 };
-
 class MeshSimplification {
 public:
 	MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio);

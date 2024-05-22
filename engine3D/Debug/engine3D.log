@@ -1,22 +1,7 @@
 ﻿  MeshSimplification.cpp
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(14,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(18,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(88,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(330,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(402,36): warning C4018: '<': signed/unsigned mismatch
-  lineMesh.cpp
-  mesh.cpp
-  obj_loader.cpp
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\obj_loader.cpp(20,6): warning C4101: 'bla1': unreferenced local variable
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\obj_loader.cpp(69,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\obj_loader.cpp(104,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\obj_loader.cpp(119,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\obj_loader.cpp(411,16): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-  scene.cpp
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\scene.cpp(97,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\scene.cpp(100,24): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\scene.cpp(181,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\scene.cpp(181,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  shape.cpp
-  Generating Code...
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(16,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(20,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(99,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(338,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(403,36): warning C4018: '<': signed/unsigned mismatch
   engine3D.vcxproj -> C:\Users\manin\Documents\Github\MeshSimplification\Debug\engine3D.lib
