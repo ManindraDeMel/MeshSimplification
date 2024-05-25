@@ -3,7 +3,7 @@
 MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio, bool CNN)
 	: m_vertices(vertices), m_OBJIndices(OBJIndices) {
 	
-	readImportantEdges("./res/important_edge.txt");
+	readImportantEdges("./res/person_0106_important_edge.txt");
 
 	int originalFaceCount = m_OBJIndices.size() / 3;
 	MAX_FACES = static_cast<int>(originalFaceCount * simplificationRatio);

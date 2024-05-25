@@ -32,7 +32,7 @@ public:
 	
     bool hasNormals;
     
-	OBJModel(const std::string& fileName, float simplifyFlag);											//Edited
+	OBJModel(const std::string& fileName, float simplifyFlag);		
     OBJModel(const std::string& fileName, float simplifyFlag, bool CNN);
     IndexedModel ToIndexedModel();
 

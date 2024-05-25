@@ -1,2 +1,10 @@
-﻿  shape.cpp
+﻿  MeshSimplification.cpp
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(14,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(17,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(41,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(44,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(122,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(371,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(441,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(515,36): warning C4018: '<': signed/unsigned mismatch
   engine3D.vcxproj -> C:\Users\manin\Documents\Github\MeshSimplification\Debug\engine3D.lib
