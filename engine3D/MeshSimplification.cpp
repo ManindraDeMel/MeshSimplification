@@ -1,41 +1,64 @@
 #include "MeshSimplification.h"
 
-MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float ratio) : m_vertices(vertices), m_OBJIndices(OBJIndices)
-{
-
-	readImportantVertices("./res/coords.txt");
-	int originalFaceCount = m_OBJIndices.size() / 3;
-	MAX_FACES = static_cast<int>(originalFaceCount * ratio);
-
-	// Init edgeVector.
-	initEdgeVector();
+MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio, bool CNN)
+	: m_vertices(vertices), m_OBJIndices(OBJIndices) {
 	
-	// Init neighbors multimap.
+	readImportantEdges("./res/important_edge.txt");
+
+	int originalFaceCount = m_OBJIndices.size() / 3;
+	MAX_FACES = static_cast<int>(originalFaceCount * simplificationRatio);
+
+	initEdgeVector();
 	initVertexNeighbor();
 
-	for (int i = 0; i < m_vertices.size(); i++) 
-	{
+	for (int i = 0; i < m_vertices.size(); i++) {
 		m_errors.push_back(calcVertexError(i));
 	}
-	for (int i = 0; i < m_edgeVector.size(); i++) 
-	{
+	for (int i = 0; i < m_edgeVector.size(); i++) {
 		calcEdgeError(m_edgeVector[i]);
 	}
 
 	buildHeap();
+	if (CNN) {
+		startWithConsideration();
+	}
+	else {
+		start();
+	}
+}
 
-	// Start the simplification algorithm.
+MeshSimplification::MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio)
+	: m_vertices(vertices), m_OBJIndices(OBJIndices) {
+
+	readImportantEdges("./res/important_edge.txt");
+
+	int originalFaceCount = m_OBJIndices.size() / 3;
+	MAX_FACES = static_cast<int>(originalFaceCount * simplificationRatio);
+
+	initEdgeVector();
+	initVertexNeighbor();
+
+	for (int i = 0; i < m_vertices.size(); i++) {
+		m_errors.push_back(calcVertexError(i));
+	}
+	for (int i = 0; i < m_edgeVector.size(); i++) {
+		calcEdgeError(m_edgeVector[i]);
+	}
+
+	buildHeap();
 	start();
 }
 
 // Function to read the important vertices from a file.
-void MeshSimplification::readImportantVertices(const string& filename) {
+void MeshSimplification::readImportantEdges(const string& filename) {
 	ifstream file(filename);
-	int index;
-	while (file >> index) {
-		m_importantVertices.insert(index);
+	int vertex1, vertex2;
+	while (file >> vertex1 >> vertex2) {
+		m_importantEdges.insert(make_pair(vertex1, vertex2));
+		m_importantEdges.insert(make_pair(vertex2, vertex1)); // Include both directions
 	}
 }
+
 
 /**
 * @tbrief Check if the 2 given vertices are neigbhors, they are both connected to the same vertex so combine to a triangle.
@@ -212,6 +235,12 @@ void MeshSimplification::initEdgeVector()
 		counter++;
 	}
 	m_edgeVector = removeDups(m_edgeVector);
+	    // Debug print
+    if (m_edgeVector.empty()) {
+        std::cerr << "Warning: Edge vector is empty after initialization." << std::endl;
+    } else {
+        std::cout << "Edge vector initialized with " << m_edgeVector.size() << " edges." << std::endl;
+    }
 }
 
 // @tbrief Initialize m_vertexNeighbor multimap.
@@ -283,7 +312,7 @@ void MeshSimplification::calcEdgeError(struct Edge& e)
 }
 
 //  @tbrief The simplification algorithm.
-void MeshSimplification::start() {
+void MeshSimplification::startWithConsideration() {
 	int currFaces = m_OBJIndices.size() / 3;
 
 	while (currFaces > MAX_FACES) {
@@ -299,11 +328,12 @@ void MeshSimplification::start() {
 			std::cerr << "Error: Edge vector is empty after pop_heap. Cannot continue simplification." << std::endl;
 			break;
 		}
-		Edge removedEdge = m_edgeVector.back();
 
-		if (m_importantVertices.find(removedEdge.firstVertex.vertexIndex) != m_importantVertices.end() ||
-			m_importantVertices.find(removedEdge.secondVertex.vertexIndex) != m_importantVertices.end()) {
-			m_edgeVector.pop_back();
+		Edge removedEdge = m_edgeVector.back();
+		m_edgeVector.pop_back();
+
+		// Skip important edges
+		if (m_importantEdges.find(make_pair(removedEdge.firstVertex.vertexIndex, removedEdge.secondVertex.vertexIndex)) != m_importantEdges.end()) {
 			continue;
 		}
 
@@ -311,9 +341,11 @@ void MeshSimplification::start() {
 		int secondVertexInd = removedEdge.secondVertex.vertexIndex;
 		vec3 newVertex = removedEdge.newPos;
 
+		// Update the errors and position of the newly set vertex.
 		m_errors[firstVertexInd] = removedEdge.edgeQ;
 		m_vertices[firstVertexInd] = newVertex;
 
+		// Get all the neighbors of the vertex we're removing (secondVertexInd).
 		bool neighborToBothVertices = false;
 		auto ret = m_vertexNeighbor.equal_range(secondVertexInd);
 		for (auto it = ret.first; it != ret.second; ++it) {
@@ -329,12 +361,13 @@ void MeshSimplification::start() {
 			}
 		}
 
-		m_edgeVector.pop_back();
 		currFaces -= 2;
 		m_vertexNeighbor.erase(secondVertexInd);
 
+		// Calculate new faces now without the removed edge.
 		calcFaces(firstVertexInd, secondVertexInd);
 
+		// Updating m_edgeVector, so any edge that was connected to the removed edge has its error recalculated and is only connected to the remaining vertex.
 		for (int i = 0; i < m_edgeVector.size(); i++) {
 			if (m_edgeVector[i].secondVertex.vertexIndex == secondVertexInd) {
 				m_edgeVector[i].secondVertex.vertexIndex = firstVertexInd;
@@ -349,6 +382,85 @@ void MeshSimplification::start() {
 		buildHeap();
 	}
 }
+
+void MeshSimplification::start()
+{
+	int currFaces = m_OBJIndices.size() / 3;
+
+	while (currFaces > MAX_FACES)
+	{
+		// Get the edge to remove.
+		pop_heap(m_edgeVector.begin(), m_edgeVector.end(), compEdgeErr());
+		Edge removedEdge = m_edgeVector.back();
+		int firstVertexInd = removedEdge.firstVertex.vertexIndex;
+		int secondVertexInd = removedEdge.secondVertex.vertexIndex;
+		vec3 newVertex = removedEdge.newPos;
+
+		// Update the errors and position of the newly set vertex.
+		m_errors[firstVertexInd] = removedEdge.edgeQ;
+		m_vertices[firstVertexInd] = newVertex;
+
+		// Get all the neighbors of the vertex we're removing (secondVertexInd).
+		// Insert into every one of them the combined vertex (secondVertexInd) unless it already had it.
+		// Notice we don't remove the removed vertex from the neighbors since it's not valid to erase while iterating inside an iterator without creating a copy of the original multimap and this doesn't effect correctness.
+		bool neighborToBothVertices = false;
+		pair <multimap<int, int>::iterator, multimap<int, int>::iterator> ret = m_vertexNeighbor.equal_range(secondVertexInd);
+		for (multimap<int, int>::iterator it = ret.first; it != ret.second; ++it)
+		{
+			neighborToBothVertices = false;
+			pair <multimap<int, int>::iterator, multimap<int, int>::iterator> neighbor = m_vertexNeighbor.equal_range(it->second);
+
+			for (multimap<int, int>::iterator it2 = neighbor.first; it2 != neighbor.second; ++it2)
+			{
+				// This neighbor contained both firstVertexInd and secondVertexInd, so after the loop don't add to it the firstVertexInd.
+				if (it2->second == firstVertexInd)
+				{
+					neighborToBothVertices = true;
+				}
+			}
+
+			if (it->second != firstVertexInd && !neighborToBothVertices)
+			{
+				m_vertexNeighbor.insert(pair<int, int>(it->second, firstVertexInd));
+			}
+		}
+
+		// Removes the edge with the minimal error.
+		m_edgeVector.pop_back();
+
+		// Reduce the faces count.
+		currFaces = currFaces - 2;
+
+		// Removing the deleted vertex in the neighbors multimap.
+		m_vertexNeighbor.erase(secondVertexInd);
+
+		// Calculate new faces now without the removed edge.
+		calcFaces(firstVertexInd, secondVertexInd);
+
+		// Updating m_edgeVector, so any edge that was connected to the removed edge has it's error recalculated and is only connected to the remaining vertex.
+		for (int i = 0; i < m_edgeVector.size(); i++)
+		{
+			if (m_edgeVector[i].secondVertex.vertexIndex == secondVertexInd)
+			{
+				m_edgeVector[i].secondVertex.vertexIndex = firstVertexInd;
+			}
+
+			else if (m_edgeVector[i].firstVertex.vertexIndex == secondVertexInd)
+			{
+				m_edgeVector[i].firstVertex.vertexIndex = firstVertexInd;
+			}
+
+			if (m_edgeVector[i].firstVertex.vertexIndex == firstVertexInd || m_edgeVector[i].secondVertex.vertexIndex == firstVertexInd)
+			{
+				calcEdgeError(m_edgeVector[i]);
+			}
+		}
+
+		// Rebuild the heap with the updated edge errors.
+		buildHeap();
+	}
+}
+
 
 
 vector<vec3> MeshSimplification::getVertices()

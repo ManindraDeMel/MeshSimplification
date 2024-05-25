@@ -1,7 +1,2 @@
-﻿  MeshSimplification.cpp
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(16,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(20,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(99,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(338,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\manin\Documents\Github\MeshSimplification\engine3D\MeshSimplification.cpp(403,36): warning C4018: '<': signed/unsigned mismatch
+﻿  shape.cpp
   engine3D.vcxproj -> C:\Users\manin\Documents\Github\MeshSimplification\Debug\engine3D.lib

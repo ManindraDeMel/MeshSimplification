@@ -17,6 +17,12 @@ Shape::Shape(const std::string& fileName, float simplifyFlag){
 	tex = 0;
 	isCopy = false;
 }
+
+Shape::Shape(const std::string& fileName, float simplifyFlag, bool CNN) {
+	mesh = new Mesh(fileName, simplifyFlag, CNN);
+	tex = 0;
+	isCopy = false;
+}
 //@Edited
 Shape::Shape(const std::string& fileName,const std::string& textureFileName, float simplifyFlag){
 	mesh = new Mesh(fileName, simplifyFlag);
@@ -70,20 +76,20 @@ void Shape::draw(int mode)
 		tex->Bind();
 	}
 	else {
-		std::cerr << "Warning: No texture bound." << std::endl;
+		//std::cerr << "Warning: No texture bound." << std::endl;
 	}
 	if (mesh) {
 		mesh->Draw(mode);
 	}
 	else {
-		std::cerr << "Error: mesh is not initialized." << std::endl;
+		//std::cerr << "Error: mesh is not initialized." << std::endl;
 	}
 
 	if (lineMesh) {
 		lineMesh->Draw();
 	}
 	else {
-		std::cerr << "Error: lineMesh is not initialized." << std::endl;
+		//std::cerr << "Error: lineMesh is not initialized." << std::endl;
 	}
 }
 

@@ -26,6 +26,7 @@ public:
 	void addShape(const std::string& fileName,const std::string& textureFileName, float simplifyFlag);						//@Edited
 	void addShape(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices);
 	void addShape(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices,const std::string& textureFileName);
+	void addShape(const std::string& fileName, glm::vec3 position, float simplifyFlag, bool CNN);
 	void addShader(const std::string& fileName);
 
 	glm::mat4 GetViewProjection(int indx) const;

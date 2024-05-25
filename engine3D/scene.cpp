@@ -55,6 +55,14 @@ Scene::Scene(glm::vec3 position,float angle,float hwRelation,float near, float f
 		shapes.push_back(newShape);
 	}
 
+	void Scene::addShape(const std::string& fileName, glm::vec3 position, float simplifyFlag, bool CNN)
+	{
+		Shape* newShape = new Shape(fileName, simplifyFlag, CNN);
+		newShape->myTranslate(position, 1);
+		newShape->changeCenterOfRotation(position);
+		shapes.push_back(newShape);
+	}
+
 	// fileName contain the OBJ file to parse
 	// textureFileName contain the texture file to apply
 	// simplifyFlag = 0 -> load OBJ as is

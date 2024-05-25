@@ -18,6 +18,13 @@ Mesh::Mesh(const std::string& fileName, float simplifyFlag)
 
 }
 
+Mesh::Mesh(const std::string& fileName, float simplifyFlag, bool CNN)
+{
+	IndexedModel model = OBJModel(fileName, simplifyFlag, CNN).ToIndexedModel();
+	InitMesh(model);
+
+}
+
 void Mesh::InitMesh(const IndexedModel& model)
 {
     m_numIndices = model.indices.size();

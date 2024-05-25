@@ -61,6 +61,7 @@ struct compEdgeErr {
 };
 class MeshSimplification {
 public:
+	MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio, bool CNN);
 	MeshSimplification(list<OBJIndex> OBJIndices, vector<vec3> vertices, float simplificationRatio);
 	~MeshSimplification();
 
@@ -76,7 +77,7 @@ private:
 	vector<Edge> m_edgeVector;
 	multimap<int, int> m_vertexNeighbor;
 	vector<mat4> m_errors;
-	set<int> m_importantVertices;
+	set<pair<int, int>> m_importantEdges;
 	int MAX_FACES;
 
 	void initEdgeVector();
@@ -85,8 +86,9 @@ private:
 	void calcEdgeError(struct Edge& e);
 	void buildHeap();
 	void start();
+	void startWithConsideration();
 	bool isTriangle(int second, int third);
 	void calcFaces(int firstEdgeInd, int secondEdgeInd);
 	vector<Edge> removeDups(vector<Edge> toRemove);
-	void readImportantVertices(const string& filename);
+	void readImportantEdges(const string& filename);
 };
